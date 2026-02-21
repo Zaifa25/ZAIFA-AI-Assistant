@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ZAIFA
 
 A JARVIS-style voice assistant frontend. Single screen with voice input—connect your AI agent to process the transcribed speech.
@@ -82,3 +83,7 @@ A JARVIS-style voice assistant frontend. Single screen with voice input—connec
 4. **In n8n** – Use `$json.text` or `$json.command` to trigger your actions (IF conditions, HTTP requests, etc.).
 
 **Note:** When running in a browser (Chrome), the webhook URL must support CORS. For n8n cloud or self-hosted with CORS enabled, it should work. For mobile/desktop builds, CORS is not an issue.
+=======
+# ZAIFA-AI-Assistant
+ZAIFA AI Assistant – A Flutter-based email automation assistant that enables users to send emails through voice or text commands using n8n workflows.
+>>>>>>> 24112e4e7b69329afe6a99882d618f4beb8cfc7a
