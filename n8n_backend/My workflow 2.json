@@ -1,0 +1,204 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "zaifa",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -544,
+        -208
+      ],
+      "id": "c9425514-d913-4fe5-99fe-4eb4940e0c69",
+      "name": "Webhook",
+      "webhookId": "aa073e2d-5431-4b82-b9a2-45cb22d54ed4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body }}",
+        "options": {
+          "systemMessage": "When the user asks to send an email, return the response in strict JSON format like this:\n\n{\n  \"to\": \"recipient email\",\n  \"subject\": \"email subject\",\n  \"message\": \"email body\"\n}\n\nDo not add any extra text.\nDo not add explanations.\nOnly return valid JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -320,
+        -208
+      ],
+      "id": "8dc1970a-3f56-4610-b537-f00f4b1e31cd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = items[0].json.output || \"\";\n\n// Check if empty\nif (!raw) {\n  return [\n    {\n      json: {\n        error: \"No output received\"\n      }\n    }\n  ];\n}\n\n// Extract JSON part\nconst jsonStart = raw.indexOf(\"{\");\nconst jsonEnd = raw.lastIndexOf(\"}\") + 1;\n\nif (jsonStart === -1 || jsonEnd === -1) {\n  return [\n    {\n      json: {\n        error: \"Invalid JSON format\"\n      }\n    }\n  ];\n}\n\nconst jsonString = raw.slice(jsonStart, jsonEnd);\n\nreturn [\n  {\n    json: JSON.parse(jsonString)\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -208
+      ],
+      "id": "ca4674f9-281a-4657-a1c5-f650f5f6d046",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.message }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        -208
+      ],
+      "id": "a0aababb-6ba3-440c-97c7-4eaa3dd978cf",
+      "name": "Send a message",
+      "webhookId": "80888425-8075-4cd7-b5f4-2af19bea52de",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4lxlm1tTiwg9isBA",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        0
+      ],
+      "id": "4fe9181e-83e2-44e9-82b3-fb66b54efabd",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VgeR66VVNEiEio7M",
+          "name": "paid"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "huzaifamumtaz.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "content-length": "107",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "en-US,en;q=0.9",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "182.183.89.196",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "PK",
+            "cf-ray": "9d182691c34881de-SIN",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "origin": "http://localhost:50460",
+            "priority": "u=1, i",
+            "referer": "http://localhost:50460/",
+            "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "182.183.89.196, 172.68.242.88",
+            "x-forwarded-host": "huzaifamumtaz.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-32-7487c6b997-7vl6b",
+            "x-is-trusted": "yes",
+            "x-real-ip": "182.183.89.196"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "command": "send an email to mhuzaifamumtaz7@gmail.com about tommorrow meeting will that place at 4:00 pm"
+          },
+          "webhookUrl": "https://huzaifamumtaz.app.n8n.cloud/webhook/zaifa",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f5d671ff-4c43-4dde-9556-1f06e8b5f132",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7fb4df68c2b4a2dd5c8699771f2ff647085972c820a6aedac54b05d610a239ad"
+  },
+  "id": "VNImGSPfOSMfS8zQ",
+  "tags": []
+}
